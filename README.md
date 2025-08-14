@@ -48,3 +48,6 @@ It lives inside **Telegram**, where you send it a movie name and it replies with
 ---
 
 **I've added the workflow json in n8n workflow.json you can use that, Make sure to add api keys.**
+
+
+**I've uploaded screenshots of workflow and use case example in screenshots**
