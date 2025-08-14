@@ -47,15 +47,4 @@ It lives inside **Telegram**, where you send it a movie name and it replies with
 
 ---
 
-## 📸 Workflow Screenshot
-
-<img width="1257" height="660" alt="Screenshot 2025-08-14 181554" src="https://github.com/user-attachments/assets/1973d4c6-78ce-4e64-8312-29a0a91ab27d" />
-
----
-
-## 💬 Example Interaction
-
-<img width="643" height="985" alt="Screenshot 2025-08-14 205036" src="https://github.com/user-attachments/assets/0987100b-9da4-43fe-a916-9df87c24d6c4" />
-
-<img width="526" height="461" alt="Screenshot 2025-08-14 210326" src="https://github.com/user-attachments/assets/cea359ab-5c47-4184-b078-78726149f0b8" />
-
+**I've added the workflow json in n8n workflow.json you can use that, Make sure to add api keys.**
