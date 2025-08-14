@@ -1,0 +1,287 @@
+{
+  "name": "popcorn prophet",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-r1:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -176
+      ],
+      "id": "e734cb83-9532-41d2-a39d-ee385424e7fc",
+      "name": "OpenRouter Chat Model"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a short, witty review of the movie \"{{ $('movie info').item.json.Title }}\" released in {{ $('movie info').item.json.Year }}.",
+        "options": {
+          "systemMessage": "You are popcorn prophet a film reviewer.\nJust give review as output nothing else.\nNever add movie name, or how many words..\nGive the review in 50-75 words.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        592,
+        -32
+      ],
+      "id": "1985f4ee-4f41-4973-a92c-3c215e91e0e2",
+      "name": "popcorn prophet"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "moviename",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "name": "chatId",
+              "value": "={{ $json.message.from.id }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        80,
+        -32
+      ],
+      "id": "62916609-7b15-4228-acc2-701ee37dcbe0",
+      "name": "movie name and chatId"
+    },
+    {
+      "parameters": {
+        "url": "=http://www.omdbapi.com/?i=tt3896198&apikey={{ YOUR_OMDB_API_KEY }}&t={{ $json.moviename }}"
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        256,
+        -32
+      ],
+      "id": "edd67939-f38c-49fa-839d-6bcbdbe83dc1",
+      "name": "movie info"
+    },
+    {
+      "parameters": {
+        "url": "=https://tastedive.com/api/similar?q=movie:{{ $json.Title }}&type=movie&limit=5&k={{ YOUR_TASTEDIVE_API_KEY }}"
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        -32
+      ],
+      "id": "334e3f47-a61e-42cf-bc06-f3f7e8eb796f",
+      "name": "5 new movie recommendations"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "Output",
+              "value": "=🎬 <b>{{ $('movie info').item.json.Title }} ({{ $('movie info').item.json.Year }})</b>\n⭐ <b>IMBD Rating: {{ $('movie info').item.json.imdbRating }}/10</b>\n📝 <b>Plot</b>: {{ $('movie info').item.json.Plot }}\n\n💡 <b>popcorn prophet's Opinion</b>:- <i>{{ $json.output }}</i>\n\n📌 <b>Similar Picks:\n1. {{ $('5 new movie recommendations').item.json.similar.results[0].name }}\n2. {{ $('5 new movie recommendations').item.json.similar.results[1].name }}\n3. {{ $('5 new movie recommendations').item.json.similar.results[2].name }}\n4. {{ $('5 new movie recommendations').item.json.similar.results[3].name }}\n5. {{ $('5 new movie recommendations').item.json.similar.results[4].name }}</b>\n",
+              "type": "string"
+            },
+            {
+              "name": "image url",
+              "value": "={{ $('movie info').item.json.Poster }}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        96,
+        192
+      ],
+      "id": "f1f9139c-f9ca-4217-a2f8-d6e9cae75aa0",
+      "name": "final output and image url"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ]
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        144
+      ],
+      "id": "37a036dc-b921-447a-aadc-a8bfb5439a5c",
+      "name": "Recieve user input(Only Movie Name)"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('movie name and chatId').item.json.chatId }}",
+        "file": "={{ $json['image url'] }}",
+        "additionalFields": {
+          "caption": "={{ $json.Output }}",
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        192
+      ],
+      "id": "90518af9-5d27-4022-bc3a-72749c3fea91",
+      "name": "Send a poster,movie info and 5 movie suggestions"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.message.entities[0].type }}",
+              "rightValue": "bot_command",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -112,
+        144
+      ],
+      "id": "24ce3469-b438-42a1-895a-5ae9a9248cbf",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        352
+      ],
+      "id": "ebe1e1ff-e715-4083-a009-353ae99fca16",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "connections": {
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "popcorn prophet",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "popcorn prophet": {
+      "main": [
+        [
+          {
+            "node": "final output and image url",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "movie name and chatId": {
+      "main": [
+        [
+          {
+            "node": "movie info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "movie info": {
+      "main": [
+        [
+          {
+            "node": "5 new movie recommendations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5 new movie recommendations": {
+      "main": [
+        [
+          {
+            "node": "popcorn prophet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "final output and image url": {
+      "main": [
+        [
+          {
+            "node": "Send a poster,movie info and 5 movie suggestions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recieve user input(Only Movie Name)": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "movie name and chatId",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "32c1ea6f-3534-48ee-b595-492fc716facf"
+}
+
