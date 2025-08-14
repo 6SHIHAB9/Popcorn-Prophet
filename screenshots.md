@@ -3,4 +3,5 @@
 
 **Example Use Case**
 <img width="643" height="985" alt="Screenshot 2025-08-14 205036" src="https://github.com/user-attachments/assets/448f1a84-19fb-48e3-8596-c2765910826c" />
+
 <img width="526" height="461" alt="Screenshot 2025-08-14 210326" src="https://github.com/user-attachments/assets/031dc334-7b08-410a-a46e-af8651ae05ae" />
