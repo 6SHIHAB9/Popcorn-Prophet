@@ -57,6 +57,5 @@ It lives inside **Telegram**, where you send it a movie name and it replies with
 
 <img width="643" height="985" alt="Screenshot 2025-08-14 205036" src="https://github.com/user-attachments/assets/0987100b-9da4-43fe-a916-9df87c24d6c4" />
 
-<img width="638" height="659" alt="Screenshot 2025-08-14 205104" src="https://github.com/user-attachments/assets/072cdfea-0477-4911-9f94-af5365874af6" />
-
+<img width="526" height="461" alt="Screenshot 2025-08-14 210326" src="https://github.com/user-attachments/assets/cea359ab-5c47-4184-b078-78726149f0b8" />
 
